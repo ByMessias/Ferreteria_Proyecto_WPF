@@ -3,50 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <!-- Estilo para los botones del menú lateral -->
-        <!-- Estilo para botones del menú lateral -->
-        <Style x:Key="SidebarButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                        CornerRadius="5"
-                        Margin="5">
-                            <ContentPresenter HorizontalAlignment="Left"
-                                      VerticalAlignment="Center"
-                                      Margin="10,0"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#354A66"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#2E4057"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Tema por defecto -->
+                <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
 
-        <!-- Estilo para el botón de cerrar sesión -->
-        <Style x:Key="LogoutButtonStyle" BasedOn="{StaticResource SidebarButtonStyle}" TargetType="Button">
-            <Setter Property="Foreground" Value="#FF6B6B"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#ffe0e0"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
+                <!-- Tus íconos/estilos -->
+                <ResourceDictionary Source="/Assets/Icons/Icons.xaml"/>
+                <ResourceDictionary Source="/Styles/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Styles/RadioButtonStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
-
 </Application>

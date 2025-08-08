@@ -1,5 +1,7 @@
-﻿using Ferreteria_Proyecto_WPF.Views;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Input;
+using Ferreteria_Proyecto_WPF.Views;
+using Ferreteria_Proyecto_WPF.Themes;
 
 namespace Ferreteria_Proyecto_WPF
 {
@@ -8,44 +10,38 @@ namespace Ferreteria_Proyecto_WPF
         public MainWindow()
         {
             InitializeComponent();
-            CargarModulo(new DashboardView(), "Dashboard");
+            SetModule(new DashboardView(), "Dashboard");
         }
 
-        private void CargarModulo(object view, string titulo)
+        private void ThemesToggle_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = view;
-            TituloModulo.Text = titulo;
-            this.Title = $"Ferretería - {titulo}";
+            var isDark = ThemesToggle.IsChecked == true;
+            ThemesController.SetTheme(isDark ? ThemesController.ThemeTypes.Dark
+                                             : ThemesController.ThemeTypes.Light);
         }
 
-        private void Dashboard_Click(object sender, RoutedEventArgs e)
+        private void SetModule(object view, string title)
         {
-            CargarModulo(new DashboardView(), "Dashboard");
+            MainFrame.Navigate(view);
+            TituloModulo.Text = title;
+            this.Title = $"Ferretería - {title}";
         }
 
-        private void Clientes_Click(object sender, RoutedEventArgs e)
-        {
-            CargarModulo(new ClientesView(), "Clientes");
-        }
+        private void Dashboard_Click(object s, RoutedEventArgs e) => SetModule(new DashboardView(), "Dashboard");
+        private void Clientes_Click(object s, RoutedEventArgs e) => SetModule(new ClientesView(), "Clientes");
+        private void Productos_Click(object s, RoutedEventArgs e) => SetModule(new ProductosView(), "Productos");
+        private void Facturacion_Click(object s, RoutedEventArgs e) => SetModule(new FacturacionView(), "Facturación");
+        private void Reportes_Click(object s, RoutedEventArgs e) => SetModule(new ReportesView(), "Reportes");
 
-        private void Productos_Click(object sender, RoutedEventArgs e)
-        {
-            CargarModulo(new ProductosView(), "Productos");
-        }
+        private void Close_Click(object s, RoutedEventArgs e) => Close();
+        private void Minimize_Click(object s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+        private void Restore_Click(object s, RoutedEventArgs e) => WindowState = (WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
 
-        private void Facturacion_Click(object sender, RoutedEventArgs e)
+        // Drag window desde el header
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            CargarModulo(new FacturacionView(), "Facturación");
-        }
-
-        private void Reportes_Click(object sender, RoutedEventArgs e)
-        {
-            CargarModulo(new ReportesView(), "Reportes");
-        }
-
-        private void CerrarSesion_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
+            base.OnMouseLeftButtonDown(e);
+            if (e.ButtonState == MouseButtonState.Pressed) DragMove();
         }
     }
 }
