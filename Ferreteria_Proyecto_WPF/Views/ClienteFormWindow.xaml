@@ -1,0 +1,162 @@
+﻿<Window x:Class="Ferreteria_Proyecto_WPF.Views.ClienteFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" 
+        Width="760" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{DynamicResource SecundaryBackgroundColor}">
+
+    <!-- Recursos locales -->
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
+
+    <!-- Layout -->
+    <Grid Background="{DynamicResource SecundaryBackgroundColor}" Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Grid.Row="0"
+                   Text="{Binding Title}"
+                   FontSize="20" FontWeight="SemiBold"
+                   Margin="4,4,4,10"
+                   Foreground="{DynamicResource PrimaryTextColor}"/>
+
+        <!-- Card -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource TertiaryBackgroundColor}"
+                CornerRadius="10" Padding="16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Nombres -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                    <TextBlock Text="Nombres" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.Nombres, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Apellidos -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                    <TextBlock Text="Apellidos" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.Apellidos, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Cédula/RNC -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                    <TextBlock Text="Cédula / RNC" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.CedulaRNC, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Email -->
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,10">
+                    <TextBlock Text="Email" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.Email, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Teléfono -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,10">
+                    <TextBlock Text="Teléfono" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.Telefono, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Género -->
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,10">
+                    <TextBlock Text="Género" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <ComboBox ItemsSource="{Binding Generos}"
+                              SelectedValuePath="IdGenero"
+                              DisplayMemberPath="Nombre"
+                              SelectedValue="{Binding Entidad.IdGenero}"
+                              Height="32"
+                              Background="{DynamicResource PrimaryBackgroundColor}"
+                              BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Provincia -->
+                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,10">
+                    <TextBlock Text="Provincia" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <ComboBox ItemsSource="{Binding Provincias}"
+                              SelectedValuePath="IdProvincia"
+                              DisplayMemberPath="Nombre"
+                              SelectedValue="{Binding Entidad.IdProvincia}"
+                              Height="32"
+                              Background="{DynamicResource PrimaryBackgroundColor}"
+                              BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Ciudad -->
+                <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,10">
+                    <TextBlock Text="Ciudad" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <ComboBox ItemsSource="{Binding Ciudades}"
+                              SelectedValuePath="IdCiudad"
+                              DisplayMemberPath="Nombre"
+                              SelectedValue="{Binding Entidad.IdCiudad}"
+                              Height="32"
+                              Background="{DynamicResource PrimaryBackgroundColor}"
+                              BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Dirección -->
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,10">
+                    <TextBlock Text="Dirección (calle y número)" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBox Text="{Binding Entidad.DireccionLinea, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32" Padding="6"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"/>
+                </StackPanel>
+
+                <!-- Activo -->
+                <CheckBox Grid.Row="5" Grid.ColumnSpan="2"
+                          IsChecked="{Binding Entidad.Activo}"
+                          Content="Activo"
+                          Foreground="{DynamicResource PrimaryTextColor}"/>
+            </Grid>
+        </Border>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Cancelar" Margin="0,0,10,0" Width="110" Height="34"
+                    Command="{Binding CancelarCommand}"/>
+            <Button Content="Guardar" Width="110" Height="34"
+                    Command="{Binding GuardarCommand}"
+                    Background="{DynamicResource SecundaryBlueColor}"
+                    Foreground="{DynamicResource TertiaryWhiteColor}"/>
+        </StackPanel>
+
+        <!-- Overlay Busy -->
+        <Border Grid.RowSpan="3" Background="#80000000"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+            <TextBlock Text="Procesando..." Foreground="White" FontWeight="SemiBold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>

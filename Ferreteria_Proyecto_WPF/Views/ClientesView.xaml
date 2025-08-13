@@ -4,136 +4,160 @@
              xmlns:vm="clr-namespace:Ferreteria_Proyecto_WPF.ViewModels"
              FontFamily="Poppins">
 
+    <!-- ViewModel -->
     <UserControl.DataContext>
-        <vm:ClientesViewModel />
+        <vm:ClientesViewModel/>
     </UserControl.DataContext>
 
-    <!-- Fondo general usando tema -->
-    <Grid Background="{DynamicResource PrimaryBackgroundColor}" Margin="10">
-        <!-- Tarjeta principal como el Home -->
-        <Border CornerRadius="8"
-                Background="{DynamicResource SecundaryBackgroundColor}"
-                Padding="14">
+    <!-- Layout raíz -->
+    <Grid Margin="12"
+          Background="{DynamicResource SecundaryBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <DockPanel LastChildFill="True">
+        <!-- Título -->
+        <TextBlock Grid.Row="0"
+                   Text="Gestión de Clientes"
+                   Margin="8,8,8,12"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Foreground="{DynamicResource PrimaryTextColor}"/>
 
-                <!-- Título + subtítulo -->
-                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Gestión de Clientes"
-                               Foreground="{DynamicResource PrimaryTextColor}"
-                               FontSize="24"
-                               FontWeight="Bold"/>
-                    <TextBlock Text="Administra clientes, contactos y direcciones."
-                               Foreground="{DynamicResource SecundaryTextColor}"
-                               Opacity="0.85"
-                               FontSize="12"/>
-                </StackPanel>
+        <!-- Card de contenido -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource TertiaryBackgroundColor}"
+                CornerRadius="10"
+                BorderBrush="{DynamicResource TertiaryBackgroundColor}"
+                BorderThickness="1"
+                Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <!-- Barra de acciones -->
-                <Border DockPanel.Dock="Top"
-                        Background="{DynamicResource TertiaryBackgroundColor}"
-                        CornerRadius="8"
-                        Padding="10"
-                        Margin="0,0,0,12">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Buscador + Botón Nuevo -->
+                <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12">
+                    <TextBox Width="320"
+                             Height="36"
+                             DockPanel.Dock="Left"
+                             Margin="0,0,10,0"
+                             Text="{Binding Busqueda, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalContentAlignment="Center"
+                             FontSize="14"
+                             Padding="8"
+                             Background="{DynamicResource PrimaryBackgroundColor}"
+                             Foreground="{DynamicResource PrimaryTextColor}"
+                             BorderBrush="{DynamicResource SecundaryBackgroundColor}"
+                             BorderThickness="1"
+                             ToolTip="Buscar por nombre, cédula, email, ciudad o provincia"/>
+                    <Button Content="➕ Nuevo Cliente"
+                            Height="36"
+                            Width="160"
+                            Command="{Binding AgregarCommand}"
+                            Cursor="Hand"
+                            FontWeight="SemiBold"
+                            Background="{DynamicResource SecundaryBlueColor}"
+                            Foreground="{DynamicResource TertiaryWhiteColor}"
+                            BorderThickness="0"/>
+                </DockPanel>
 
-                        <TextBox Grid.Column="0"
-                                 Height="36"
-                                 Margin="0,0,10,0"
-                                 VerticalContentAlignment="Center"
-                                 Foreground="{DynamicResource PrimaryTextColor}"
-                                 Background="{DynamicResource SecundaryBackgroundColor}"
-                                 BorderBrush="{DynamicResource PrimaryBackgroundColor}"
-                                 ToolTip="Buscar por nombre, cédula/RNC, teléfono o email"
-                                 Text="{Binding Busqueda, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <Button Grid.Column="1"
-                                Content="Nuevo"
-                                Style="{StaticResource ProButtonStyle}"
-                                Command="{Binding AgregarCommand}"/>
-                    </Grid>
-                </Border>
-
-                <!-- Tabla -->
-                <DataGrid ItemsSource="{Binding ClientesFiltrados}"
+                <!-- DataGrid -->
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding ClientesFiltrados}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           IsReadOnly="True"
-                          RowHeight="38"
                           HeadersVisibility="Column"
                           GridLinesVisibility="None"
                           BorderThickness="0"
-                          Background="{DynamicResource SecundaryBackgroundColor}"
+                          RowHeight="40"
+                          FontSize="14"
+                          AlternationCount="2"
+                          Background="{DynamicResource TertiaryBackgroundColor}"
                           Foreground="{DynamicResource PrimaryTextColor}"
-                          AlternatingRowBackground="{DynamicResource TertiaryBackgroundColor}">
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
 
+                    <!-- Estilos -->
                     <DataGrid.Resources>
-                        <!-- Encabezado estilo Home -->
+                        <!-- Encabezados -->
                         <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="Padding" Value="10,8"/>
-                            <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBackgroundColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundColor}"/>
+                            <Setter Property="Padding" Value="10"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource SecundaryBackgroundColor}"/>
                             <Setter Property="BorderThickness" Value="0 0 0 1"/>
                         </Style>
 
-                        <!-- Filas hover/selección -->
+                        <!-- Filas -->
                         <Style TargetType="DataGridRow">
-                            <Setter Property="Background" Value="{DynamicResource SecundaryBackgroundColor}"/>
-                            <Setter Property="SnapsToDevicePixels" Value="True"/>
+                            <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
+                            <Setter Property="BorderThickness" Value="0"/>
                             <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
+                                <!-- Fila alterna -->
+                                <Trigger Property="AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="{DynamicResource PrimaryBackgroundColor}"/>
                                 </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource TertiaryBackgroundColor}"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                <!-- Hover -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource SecundaryBackgroundColor}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
+
+                        <!-- Celdas -->
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="8,0,8,0"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
                     </DataGrid.Resources>
 
+                    <!-- Columnas (actualizadas a los nuevos nombres) -->
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID"           Binding="{Binding ClienteId}"         Width="60"/>
-                        <DataGridTextColumn Header="Nombre"       Binding="{Binding Nombre}"            Width="160"/>
-                        <DataGridTextColumn Header="Apellido"     Binding="{Binding Apellido}"          Width="160"/>
-                        <DataGridTextColumn Header="Cédula/RNC"   Binding="{Binding Cedula}"            Width="140"/>
-                        <DataGridTextColumn Header="Email"        Binding="{Binding CorreoElectronico}" Width="220"/>
-                        <DataGridTextColumn Header="Provincia"    Binding="{Binding ProvinciaNombre}"   Width="160"/>
-                        <DataGridTextColumn Header="Ciudad"       Binding="{Binding CiudadNombre}"      Width="160"/>
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdCliente}" Width="60"/>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding Nombres}" Width="160"/>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding Apellidos}" Width="160"/>
+                        <DataGridTextColumn Header="Cédula/RNC" Binding="{Binding CedulaRNC}" Width="120"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
+                        <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="120"/>
+                        <DataGridTextColumn Header="Provincia" Binding="{Binding Provincia}" Width="150"/>
+                        <DataGridTextColumn Header="Ciudad" Binding="{Binding Ciudad}" Width="150"/>
 
-                        <DataGridTemplateColumn Header="Acciones" Width="120">
+                        <!-- Acciones -->
+                        <DataGridTemplateColumn Header="Acciones" Width="140">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <Button Content="✏"
-                                                ToolTip="Editar"
-                                                Width="34" Height="30" Margin="3,0"
-                                                Background="{DynamicResource TertiaryBackgroundColor}"
-                                                BorderBrush="{DynamicResource PrimaryBackgroundColor}"
+                                        <Button Content="Editar"
+                                                Width="58" Height="28"
+                                                Margin="0,0,6,0"
+                                                Cursor="Hand"
                                                 Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"/>
-                                        <Button Content="🗑"
-                                                ToolTip="Eliminar"
-                                                Width="34" Height="30" Margin="3,0"
+                                                CommandParameter="{Binding}"
+                                                Background="{DynamicResource TertiaryBlueColor}"
+                                                Foreground="{DynamicResource TertiaryWhiteColor}"
+                                                BorderThickness="0"/>
+                                        <Button Content="Eliminar"
+                                                Width="66" Height="28"
+                                                Cursor="Hand"
+                                                Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
                                                 Background="{DynamicResource TertiaryRedColor}"
                                                 Foreground="{DynamicResource TertiaryWhiteColor}"
-                                                BorderBrush="{DynamicResource SecundaryRedColor}"
-                                                Command="{Binding DataContext.EliminarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"/>
+                                                BorderThickness="0"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-
-            </DockPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

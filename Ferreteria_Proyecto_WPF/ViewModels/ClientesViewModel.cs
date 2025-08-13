@@ -1,93 +1,95 @@
-﻿using Ferreteria_Proyecto_WPF.Models;
-using Ferreteria_Proyecto_WPF.Services;
-using Ferreteria_Proyecto_WPF.Helpers;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using Ferreteria_Proyecto_WPF.Helpers;
+using Ferreteria_Proyecto_WPF.Models;
+using Ferreteria_Proyecto_WPF.Services;
+using Ferreteria_Proyecto_WPF.Views;
 
 namespace Ferreteria_Proyecto_WPF.ViewModels
 {
-    public class ClientesViewModel : INotifyPropertyChanged
+    public class ClientesViewModel : BaseViewModel
     {
-        public ObservableCollection<Cliente> Clientes { get; set; } = new();
-        public ObservableCollection<Cliente> ClientesFiltrados { get; set; } = new();
+        private readonly IClienteService _service;
+
+        public ObservableCollection<Cliente> Clientes { get; } = new();
+        public ObservableCollection<Cliente> ClientesFiltrados { get; } = new();
 
         private string _busqueda;
         public string Busqueda
         {
             get => _busqueda;
-            set
-            {
-                _busqueda = value;
-                OnPropertyChanged();
-                FiltrarClientes();
-            }
+            set { _busqueda = value; OnPropertyChanged(); Filtrar(); }
         }
 
-        public ICommand EliminarCommand { get; }
-        public ICommand EditarCommand { get; }
         public ICommand AgregarCommand { get; }
+        public ICommand EditarCommand { get; }
+        public ICommand EliminarCommand { get; }
 
-        public ClientesViewModel()
+        public ClientesViewModel() : this(new ClienteService()) { }
+
+        public ClientesViewModel(IClienteService service)
         {
-            CargarClientes();
+            _service = service;
 
-            EliminarCommand = new RelayCommand(EliminarCliente);
-            EditarCommand = new RelayCommand(EditarCliente);
-            AgregarCommand = new RelayCommand(AgregarCliente);
+            AgregarCommand  = new RelayCommand(_  => Agregar());
+            EditarCommand   = new RelayCommand(x  => Editar(x as Cliente), x => x is Cliente);
+            EliminarCommand = new RelayCommand(x  => Eliminar(x as Cliente), x => x is Cliente);
+
+            Cargar();
         }
 
-        private void CargarClientes()
+        private void Cargar()
         {
-            var clientes = ClienteService.ObtenerClientes();
             Clientes.Clear();
-            foreach (var cliente in clientes)
-                Clientes.Add(cliente);
-
-            FiltrarClientes();
+            foreach (var c in _service.ObtenerClientes())
+                Clientes.Add(c);
+            Filtrar();
         }
 
-        private void FiltrarClientes()
+        private void Filtrar()
         {
-            var filtro = string.IsNullOrWhiteSpace(Busqueda)
+            var term = (Busqueda ?? string.Empty).Trim().ToLowerInvariant();
+            var fuente = string.IsNullOrWhiteSpace(term)
                 ? Clientes
-                : new ObservableCollection<Cliente>(
-                    Clientes.Where(c =>
-                        $"{c.Nombre} {c.Apellido}".ToLower().Contains(Busqueda.ToLower()) ||
-                        (c.Cedula?.ToLower().Contains(Busqueda.ToLower()) ?? false)
-                    )
-                );
+                : new ObservableCollection<Cliente>(Clientes.Where(c =>
+                       ($"{c.Nombres} {c.Apellidos}".Trim()).ToLowerInvariant().Contains(term)
+                    || (c.CedulaRNC ?? "").ToLowerInvariant().Contains(term)
+                    || (c.Email ?? "").ToLowerInvariant().Contains(term)
+                    || (c.Telefono ?? "").ToLowerInvariant().Contains(term)
+                    || (c.Provincia ?? "").ToLowerInvariant().Contains(term)
+                    || (c.Ciudad ?? "").ToLowerInvariant().Contains(term)));
 
             ClientesFiltrados.Clear();
-            foreach (var c in filtro)
-                ClientesFiltrados.Add(c);
+            foreach (var c in fuente) ClientesFiltrados.Add(c);
         }
 
-        private void EliminarCliente(object clienteObj)
+        private void Agregar()
         {
-            // TODO: lógica de eliminación real con confirmación
-            if (clienteObj is Cliente cliente)
-                ClientesFiltrados.Remove(cliente);
+            var vm  = new ClienteFormViewModel(_service);
+            var win = new ClienteFormWindow(vm) { Owner = Application.Current.MainWindow };
+
+            vm.RequestClose += r => { win.DialogResult = r; win.Close(); };
+            if (win.ShowDialog() == true) Cargar();
         }
 
-        private void EditarCliente(object clienteObj)
+        private void Editar(Cliente cli)
         {
-            // TODO: lógica de edición (abrir modal, formulario, etc.)
-            if (clienteObj is Cliente cliente)
-            {
-                // Aquí puedes abrir ventana de edición
-            }
+            if (cli is null) return;
+
+            var vm  = new ClienteFormViewModel(_service, cli.IdCliente);
+            var win = new ClienteFormWindow(vm) { Owner = Application.Current.MainWindow };
+
+            vm.RequestClose += r => { win.DialogResult = r; win.Close(); };
+            if (win.ShowDialog() == true) Cargar();
         }
 
-        private void AgregarCliente(object obj)
+        private void Eliminar(Cliente cli)
         {
-            // TODO: lógica de agregar nuevo cliente
+            if (cli is null) return;
+            _service.Eliminar(cli.IdCliente);
+            Cargar();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
